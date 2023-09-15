@@ -13,5 +13,5 @@ public interface IWriteAndReadDirectory
     public DirectoryInfo[] GetMovieFiles();
     public FileInfo[] GetTVShowFiles();
     public void deleteTemporaryDirectory();
-    //getfiles och returnera alla filer som en lista (kopia)
+
 }

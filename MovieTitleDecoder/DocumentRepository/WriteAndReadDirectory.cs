@@ -23,7 +23,10 @@ public class WriteAndReadDirectory : IWriteAndReadDirectory
         return movieDirectories; 
     }
     public FileInfo[] GetTVShowFiles() { return new FileInfo[0]; }
-    public void deleteTemporaryDirectory() { }
+    public void deleteTemporaryDirectory() 
+    {
+        Directory.Delete(tmpMediaDirectoryPath, true);
+    }
 
     private DirectoryInfo[] copyOfDirectory() 
     {
@@ -35,18 +38,15 @@ public class WriteAndReadDirectory : IWriteAndReadDirectory
 
     private static void CopyFilesRecursively(string sourcePath, string targetPath)
     {
-        //Now Create all of the directories
         foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
         {
             Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
         }
 
-        //Copy all the files & Replaces any files with the same name
         foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
         {
             File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
         }
     }
     
-    //getfiles och returnera alla filer som en lista (kopia)
 }

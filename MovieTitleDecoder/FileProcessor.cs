@@ -33,12 +33,24 @@ public class FileProcessor
             changeDirectoryNames(correctTitle);
             changeFileNames(movieDirectory, correctTitle);
         }
-        _writeAndReadDirectory.deleteTemporaryDirectory();
+        //_writeAndReadDirectory.deleteTemporaryDirectory();
     }
 
     private void changeFileNames(DirectoryInfo movieDirectory, string correctTitle) 
     {
-
+        FileInfo[] files = movieDirectory.GetFiles();
+        foreach (var file in files)
+        {
+            if (file.Extension == ".mp4" || file.Extension == ".mkv") 
+            {
+                file.MoveTo(movieDirectoryPath + "/" + correctTitle + "/" + correctTitle + file.Extension);
+            }
+            if (file.Extension == ".srt")
+            {
+                file.MoveTo(movieDirectoryPath + "/" + correctTitle + "/" + correctTitle + ".en" + file.Extension);
+            }
+        }
+        
     }
     private void changeDirectoryNames(string correctTitle) 
     {
@@ -62,28 +74,34 @@ public class FileProcessor
 
                 words = words.NextMatch();
             }
-
             yearInName = year.Value;
-            handleWordsInTitle(wordsInName);
         }
         catch (RegexMatchTimeoutException)
         {
-            // Do nothing: assume that exception represents no match.
+            return "";
         }
-        return ""; 
+        
+        StringBuilder title = handleWordsInTitle(wordsInName);
+        title.Append("(");
+        title.Append(yearInName);
+        title.Append(")");
+
+        return title.ToString(); 
     }
 
-    private string handleWordsInTitle(List<string> matches) 
+    private StringBuilder handleWordsInTitle(List<string> matches) 
     { 
-        // regler
-        // om det är en ensam bokstav måste den vara A eller a eller I eller i
-        return ""; 
+        StringBuilder sb = new StringBuilder();
+        foreach (string word in matches)
+        {
+            if (word.Length > 1 || word == "A" || word == "a" || word == "I" || word == "i")
+            {
+                sb.Append(word);
+                sb.Append(' ');
+            }            
+        }
+
+        return sb; 
     }
 
-    // hämta lista med mappar eller filer i en mapp
-    // skapa en kopia
-    // loopa genom mapparna och fixa namnet
-    // gå in i mappen och sortera där i
-
-    // profit
 }
