@@ -61,9 +61,9 @@ public class FileProcessor
         //[a-zA-Z]+ ord
         //\b(19|20)\d{2}\b år
         string wordRegEx = @"[a-zA-Z]+";
-        string yearRegEx = @"\b(19 | 20)\d{ 2}\b";
+        string yearRegEx = @"\b(19|20)\d{2}\b";
         List<string> wordsInName = new List<string>();
-        string yearInName;
+        List<string> yearInName = new List<string>();
         try
         {
             Match words = Regex.Match(movieDirectory.Name, wordRegEx);
@@ -74,7 +74,12 @@ public class FileProcessor
 
                 words = words.NextMatch();
             }
-            yearInName = year.Value;
+            while (year.Success) 
+            {
+                yearInName.Append(year.Value);
+                year = year.NextMatch();
+            }
+            
         }
         catch (RegexMatchTimeoutException)
         {
@@ -83,7 +88,7 @@ public class FileProcessor
         
         StringBuilder title = handleWordsInTitle(wordsInName);
         title.Append("(");
-        title.Append(yearInName);
+        title.Append(yearInName.ElementAt(0));
         title.Append(")");
 
         return title.ToString(); 
